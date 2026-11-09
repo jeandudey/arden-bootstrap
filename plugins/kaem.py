@@ -11,7 +11,14 @@ Sources are staged at /build, the working directory.
 
 Configuration:
 
-  commands: kaem lines, run after the prelude (the variables below).
+  commands: run after the prelude (the variables below). Each item is a kaem
+            line, or a concatenation, which kaem can only spell as a long
+            catm line with continuations:
+
+              - concat:
+                  output: libc.c
+                  from: lib            # optional directory prefix of the files
+                  files: [mes/eputs.c, stdlib/exit.c]
   env:      extra NAME: value lines added to the prelude.
   install:  after the commands, copy files into DESTDIR. kaem has no loops, so
             a list of installs is written as data and expanded here:
@@ -20,6 +27,7 @@ Configuration:
               - from: ${MES_PREFIX}/include   # directory the files are in
                 to: ${INCDIR}                 # directory under DESTDIR
                 files: [stdio.h, sys/stat.h]  # keeps its subdirectory
+                rename: {mescc.scm.in: mescc.scm}   # optional, source: name
                 mode: "755"                   # optional, chmod'd after
 
             Every destination directory is created first.
@@ -30,7 +38,7 @@ M2LIBC_PATH and PATH.
 
 import posixpath
 
-from buildstream import Element, ElementError
+from buildstream import Element, ElementError, MappingNode, ScalarNode
 
 PRELUDE = [
     "set -ex",
@@ -54,15 +62,30 @@ class KaemElement(Element):
 
     def configure(self, node):
         node.validate_keys(["commands", "env", "install"])
-        self.commands = node.get_str_list("commands")
+        self.commands = []
+        for item in node.get_sequence("commands"):
+            if isinstance(item, ScalarNode):
+                self.commands.append(item.as_str())
+                continue
+            item.validate_keys(["concat"])
+            spec = item.get_mapping("concat")
+            spec.validate_keys(["output", "from", "files"])
+            self.commands.append({
+                "concat": {
+                    "output": spec.get_str("output"),
+                    "from": spec.get_str("from", ""),
+                    "files": spec.get_str_list("files"),
+                }
+            })
         self.env = {k: v.as_str() for k, v in node.get_mapping("env", {}).items()}
         self.install = []
         for entry in node.get_sequence("install", []):
-            entry.validate_keys(["from", "to", "files", "mode"])
+            entry.validate_keys(["from", "to", "files", "rename", "mode"])
             self.install.append({
                 "from": entry.get_str("from"),
                 "to": entry.get_str("to"),
-                "files": entry.get_str_list("files"),
+                "files": entry.get_str_list("files", []),
+                "rename": {k: v.as_str() for k, v in entry.get_mapping("rename", {}).items()},
                 "mode": entry.get_str("mode", None),
             })
         self.root = self.get_variable("install-root")
@@ -93,34 +116,47 @@ class KaemElement(Element):
         vdir.open_directory(self.root.strip("/"), create=True)
 
         lines = PRELUDE + ["DESTDIR=" + self.root]
-        lines += ["{}={}".format(k, v) for k, v in self.env.items()]
-        lines += self.commands
+        lines += [f"{k}={v}" for k, v in self.env.items()]
+        for command in self.commands:
+            lines += self.__concat_lines(command["concat"]) if isinstance(command, dict) else [command]
         lines += self.__install_lines()
         with vdir.open_file(SCRIPT.lstrip("/"), mode="w") as f:
             f.write("\n".join(lines) + "\n")
 
         code = sandbox.run([KAEM, "--file", SCRIPT], cwd=BUILD, label=self.name)
         if code != 0:
-            raise ElementError("{}: kaem exited with {}".format(self, code))
+            raise ElementError(f"{self}: kaem exited with {code}")
         return self.root
+
+    @staticmethod
+    def __concat_lines(spec):
+        # One file per line, as live-bootstrap writes them: a long line is
+        # more than kaem's buffer takes.
+        names = [posixpath.join(spec["from"], f) if spec["from"] else f for f in spec["files"]]
+        lines = ["catm " + spec["output"] + " \\"]
+        lines += [" " + n + " \\" for n in names[:-1]]
+        lines.append(" " + names[-1])
+        return lines
 
     def __install_lines(self):
         lines = []
         made = set()
         for entry in self.install:
             copied = []
-            for name in entry["files"]:
-                dest = "${DESTDIR}" + posixpath.join(entry["to"], name)
+            for name, target in [(n, n) for n in entry["files"]] + list(entry["rename"].items()):
+                dest = "${DESTDIR}" + posixpath.join(entry["to"], target)
                 folder = posixpath.dirname(dest)
                 if folder not in made:
                     made.add(folder)
                     lines.append("mkdir -p " + folder)
-                lines.append("cp {} {}".format(posixpath.join(entry["from"], name), dest))
+                source = posixpath.join(entry["from"], name)
+                lines.append(f"cp {source} {dest}")
                 copied.append(dest)
             if entry["mode"]:
                 # One chmod per few files keeps the lines short.
                 for n in range(0, len(copied), 4):
-                    lines.append("chmod {} {}".format(entry["mode"], " ".join(copied[n:n + 4])))
+                    files = " ".join(copied[n:n + 4])
+                    lines.append(f"chmod {entry['mode']} {files}")
         return lines
 
 
