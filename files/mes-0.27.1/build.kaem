@@ -14,30 +14,14 @@ MES_STACK=6000000
 MES=${BINDIR}/mes-m2
 LIBDIR=${MES_PREFIX}/lib
 
-if match ${ARCH} x86; then
-    MES_ARCH=x86
-    ARCH_BITS=32
-fi
-if match ${ARCH} amd64; then
-    MES_ARCH=x86_64
-    ARCH_BITS=64
-fi
-if match ${ARCH} riscv64; then
-    MES_ARCH=riscv64
-    ARCH_BITS=64
-fi
+# x86 only: the project's prelude sets ARCH=x86
+MES_ARCH=x86
+ARCH_BITS=32
 
-# Unpack
-mkdir build
+# The tarballs are unpacked by BuildStream, into /build/build
 cd build
-ungz --file ${DISTFILES}/${NYACC_PKG}-lb1.tar.gz --output ${NYACC_PKG}.tar
-ungz --file ${DISTFILES}/${MES_PKG}.tar.gz --output ${MES_PKG}.tar
-untar --file ${NYACC_PKG}.tar
-untar --non-strict --file ${MES_PKG}.tar # ignore symlinks
 mes_run=${MES_PREFIX}/kaem.run
 replace --file ${mes_run} --output ${mes_run} --match-on 0x1000000 --replace-with 0x8048000
-
-rm ${NYACC_PKG}.tar ${MES_PKG}.tar
 
 cp ../files/config.h ${MES_PREFIX}/include/mes
 
@@ -53,10 +37,6 @@ cp include/linux/${MES_ARCH}/syscall.h include/arch/syscall.h
 
 # Remove pregenerated files
 rm mes/module/mes/psyntax.pp mes/module/mes/psyntax.pp.header
-
-# These files are symlinked in the repo
-cp mes/module/srfi/srfi-9-struct.mes mes/module/srfi/srfi-9.mes
-cp mes/module/srfi/srfi-9/gnu-struct.mes mes/module/srfi/srfi-9/gnu.mes
 
 # Build mes-m2
 kaem --verbose --strict --file kaem.${MES_ARCH}
@@ -285,93 +265,8 @@ mescc libc+tcc.c
 catm ${LIBDIR}/${MES_ARCH}-mes/libc+tcc.a ${LIBDIR}/${MES_ARCH}-mes/libc.a libc+tcc.o
 catm ${LIBDIR}/${MES_ARCH}-mes/libc+tcc.s ${LIBDIR}/${MES_ARCH}-mes/libc.s libc+tcc.s
 
-# Make directories
-mkdir -p ${DESTDIR}${PREFIX}/lib/linux ${DESTDIR}${INCDIR}/mes ${DESTDIR}${INCDIR}/sys ${DESTDIR}${INCDIR}/linux ${DESTDIR}${INCDIR}/arch
-mkdir -p ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes ${DESTDIR}${PREFIX}/lib/linux/${MES_ARCH}-mes ${DESTDIR}${INCDIR}/linux/${MES_ARCH}
-
-# Install libraries
-cp ${LIBDIR}/${MES_ARCH}-mes/libc.a ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/libc+tcc.a ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/libmescc.a ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/libc.s ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/libc+tcc.s ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/libmescc.s ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/${MES_ARCH}.M1 ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/crt1.o ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/${MES_ARCH}-mes/crt1.s ${DESTDIR}${PREFIX}/lib/${MES_ARCH}-mes/
-cp ${LIBDIR}/linux/${MES_ARCH}-mes/elf${ARCH_BITS}-footer-single-main.hex2 ${DESTDIR}${PREFIX}/lib/linux/${MES_ARCH}-mes/
-cp ${LIBDIR}/linux/${MES_ARCH}-mes/elf${ARCH_BITS}-header.hex2 ${DESTDIR}${PREFIX}/lib/linux/${MES_ARCH}-mes/
-
-# Install header files
-cp include/alloca.h ${DESTDIR}${INCDIR}/alloca.h
-cp include/argz.h ${DESTDIR}${INCDIR}/argz.h
-cp include/ar.h ${DESTDIR}${INCDIR}/ar.h
-cp include/assert.h ${DESTDIR}${INCDIR}/assert.h
-cp include/ctype.h ${DESTDIR}${INCDIR}/ctype.h
-cp include/dirent.h ${DESTDIR}${INCDIR}/dirent.h
-cp include/dirstream.h ${DESTDIR}${INCDIR}/dirstream.h
-cp include/dlfcn.h ${DESTDIR}${INCDIR}/dlfcn.h
-cp include/endian.h ${DESTDIR}${INCDIR}/endian.h
-cp include/errno.h ${DESTDIR}${INCDIR}/errno.h
-cp include/fcntl.h ${DESTDIR}${INCDIR}/fcntl.h
-cp include/features.h ${DESTDIR}${INCDIR}/features.h
-cp include/float.h ${DESTDIR}${INCDIR}/float.h
-cp include/getopt.h ${DESTDIR}${INCDIR}/getopt.h
-cp include/grp.h ${DESTDIR}${INCDIR}/grp.h
-cp include/inttypes.h ${DESTDIR}${INCDIR}/inttypes.h
-cp include/libgen.h ${DESTDIR}${INCDIR}/libgen.h
-cp include/limits.h ${DESTDIR}${INCDIR}/limits.h
-cp include/locale.h ${DESTDIR}${INCDIR}/locale.h
-cp include/math.h ${DESTDIR}${INCDIR}/math.h
-cp include/memory.h ${DESTDIR}${INCDIR}/memory.h
-cp include/pwd.h ${DESTDIR}${INCDIR}/pwd.h
-cp include/setjmp.h ${DESTDIR}${INCDIR}/setjmp.h
-cp include/signal.h ${DESTDIR}${INCDIR}/signal.h
-cp include/stdarg.h ${DESTDIR}${INCDIR}/stdarg.h
-cp include/linux/${MES_ARCH}/signal.h ${DESTDIR}${INCDIR}/arch/signal.h
-cp include/stdbool.h ${DESTDIR}${INCDIR}/stdbool.h
-cp include/stddef.h ${DESTDIR}${INCDIR}/stddef.h
-cp include/stdint.h ${DESTDIR}${INCDIR}/stdint.h
-cp include/stdio.h ${DESTDIR}${INCDIR}/stdio.h
-cp include/stdlib.h ${DESTDIR}${INCDIR}/stdlib.h
-cp include/stdnoreturn.h ${DESTDIR}${INCDIR}/stdnoreturn.h
-cp include/string.h ${DESTDIR}${INCDIR}/string.h
-cp include/strings.h ${DESTDIR}${INCDIR}/strings.h
-cp include/termio.h ${DESTDIR}${INCDIR}/termio.h
-cp include/time.h ${DESTDIR}${INCDIR}/time.h
-cp include/unistd.h ${DESTDIR}${INCDIR}/unistd.h
-
-cp include/arch/kernel-stat.h ${DESTDIR}${INCDIR}/arch/kernel-stat.h
-cp include/arch/syscall.h ${DESTDIR}${INCDIR}/arch/syscall.h
-
-cp include/linux/syscall.h ${DESTDIR}${INCDIR}/linux/syscall.h
-cp include/linux/${MES_ARCH}/syscall.h ${DESTDIR}${INCDIR}/linux/${MES_ARCH}/syscall.h
-
-cp include/mes/builtins.h ${DESTDIR}${INCDIR}/mes/builtins.h
-cp include/mes/cc.h ${DESTDIR}${INCDIR}/mes/cc.h
+# Mes's config.h is installed empty
+mkdir -p ${DESTDIR}${INCDIR}/mes
 catm ${DESTDIR}${INCDIR}/mes/config.h
-cp include/mes/constants.h ${DESTDIR}${INCDIR}/mes/constants.h
-cp include/mes/lib.h ${DESTDIR}${INCDIR}/mes/lib.h
-cp include/mes/lib-cc.h ${DESTDIR}${INCDIR}/mes/lib-cc.h
-cp include/mes/lib-mini.h ${DESTDIR}${INCDIR}/mes/lib-mini.h
-cp include/mes/mes.h ${DESTDIR}${INCDIR}/mes/mes.h
-cp include/mes/symbols.h ${DESTDIR}${INCDIR}/mes/symbols.h
-
-cp include/sys/cdefs.h ${DESTDIR}${INCDIR}/sys/cdefs.h
-cp include/sys/dir.h ${DESTDIR}${INCDIR}/sys/dir.h
-cp include/sys/file.h ${DESTDIR}${INCDIR}/sys/file.h
-cp include/sys/ioctl.h ${DESTDIR}${INCDIR}/sys/ioctl.h
-cp include/sys/mman.h ${DESTDIR}${INCDIR}/sys/mman.h
-cp include/sys/param.h ${DESTDIR}${INCDIR}/sys/param.h
-cp include/sys/resource.h ${DESTDIR}${INCDIR}/sys/resource.h
-cp include/sys/select.h ${DESTDIR}${INCDIR}/sys/select.h
-cp include/sys/stat.h ${DESTDIR}${INCDIR}/sys/stat.h
-cp include/sys/timeb.h ${DESTDIR}${INCDIR}/sys/timeb.h
-cp include/sys/time.h ${DESTDIR}${INCDIR}/sys/time.h
-cp include/sys/times.h ${DESTDIR}${INCDIR}/sys/times.h
-cp include/sys/types.h ${DESTDIR}${INCDIR}/sys/types.h
-cp include/sys/ucontext.h ${DESTDIR}${INCDIR}/sys/ucontext.h
-cp include/sys/user.h ${DESTDIR}${INCDIR}/sys/user.h
-cp include/sys/wait.h ${DESTDIR}${INCDIR}/sys/wait.h
 
 cd ../..
