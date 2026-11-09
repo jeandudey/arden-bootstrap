@@ -1,0 +1,35 @@
+--- a/scripts/mescc.scm.in	2026-11-09 14:36:35.730492508 +0100
++++ b/scripts/mescc.scm.in	2026-11-09 14:36:35.730995989 +0100
+@@ -29,9 +29,9 @@
+                         (cdr (string-split %host-type #\-)))))))
+ 
+ (define %prefix (or (getenv "MES_PREFIX")
+-                      (if (string-prefix? "@prefix" "@prefix@")
++                      (if (string-prefix? "@prefix" "/usr")
+                           ""
+-                          "@prefix@")))
++                          "/usr")))
+ 
+ (define %includedir (or (getenv "includedir")
+                         (string-append %prefix "/include")))
+@@ -39,14 +39,14 @@
+ (define %libdir (or (getenv "libdir")
+                     (string-append %prefix "/lib")))
+ 
+-(define %version (if (string-prefix? "@VERSION" "@VERSION@") "git"
+-                     "@VERSION@"))
++(define %version (if (string-prefix? "@VERSION" "0.27.1") "git"
++                     "0.27.1"))
+ 
+-(define %arch (if (string-prefix? "@mes_cpu" "@mes_cpu@") %arch
+-                  "@mes_cpu@"))
++(define %arch (if (string-prefix? "@mes_cpu" "x86") %arch
++                  "x86"))
+ 
+-(define %kernel (if (string-prefix? "@mes_kernel" "@mes_kernel@") %kernel
+-                    "@mes_kernel@"))
++(define %kernel (if (string-prefix? "@mes_kernel" "linux") %kernel
++                    "linux"))
+ 
+ (setenv "%prefix" %prefix)
+ (setenv "%includedir" %includedir)

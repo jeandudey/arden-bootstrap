@@ -18,16 +18,8 @@ LIBDIR=${MES_PREFIX}/lib
 MES_ARCH=x86
 ARCH_BITS=32
 
-# The tarballs are unpacked by BuildStream, into /build/build
-cd build
-mes_run=${MES_PREFIX}/kaem.run
-replace --file ${mes_run} --output ${mes_run} --match-on 0x1000000 --replace-with 0x8048000
-
-cp ../files/config.h ${MES_PREFIX}/include/mes
-
-# This patch was upstreamed after mes 0.27.1
-simple-patch ${MES_PREFIX}/lib/linux/wait4.c \
-    ../simple-patches/wait4.before ../simple-patches/wait4.after
+# BuildStream unpacks the tarballs into /build/build and patches them: kaem.run's base address, config.h, wait4.c and the
+# @...@ substitutions in scripts/mescc.scm.in (see the patch sources).
 
 cd ${MES_PREFIX}
 mkdir include/arch
@@ -60,13 +52,8 @@ MES_ARENA=20000000
 ${MES} -L module gen-c99cx-files.scm
 cd ../${MES_PKG}
 
-# Create mescc.scm
+# mescc.scm is scripts/mescc.scm.in with its @...@ filled in by a patch
 mescc_in=scripts/mescc.scm.in
-replace --file ${mescc_in} --output ${mescc_in} --match-on @prefix@ --replace-with ${PREFIX}
-replace --file ${mescc_in} --output ${mescc_in} --match-on @VERSION@ --replace-with ${MES_VERSION}
-replace --file ${mescc_in} --output ${mescc_in} --match-on @mes_cpu@ --replace-with ${MES_ARCH}
-replace --file ${mescc_in} --output ${mescc_in} --match-on @mes_kernel@ --replace-with linux
-
 mescc_scm=${BINDIR}/mescc.scm
 cp ${mescc_in} ${mescc_scm}
 chmod 755 ${mescc_scm}

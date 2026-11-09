@@ -1,0 +1,10 @@
+--- a/include/mes/config.h	1970-01-01 01:00:00.000000000 +0100
++++ b/include/mes/config.h	1970-01-01 01:00:00.000000000 +0100
+@@ -0,0 +1,7 @@
++// SPDX-FileCopyrightText: 2020 Samuel Tyler <samuel@samuelt.me>
++// SPDX-FileCopyrightText: 2021 Andrius Štikonas <andrius@stikonas.eu>
++//
++// SPDX-License-Identifier: GPL-3.0-or-later
++
++#undef SYSTEM_LIBC
++#define MES_VERSION "0.27.1"

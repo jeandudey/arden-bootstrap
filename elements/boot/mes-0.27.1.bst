@@ -5,7 +5,6 @@ description: |
 
 build-depends:
 - boot/base.bst
-- boot/simple-patch-1.0.bst
 
 sources:
 - kind: local
@@ -18,6 +17,19 @@ sources:
   url: "github:Googulator/nyacc/releases/download/V1.00.2-lb1/nyacc-1.00.2-lb1.tar.gz"
   ref: 708c943f89c972910e9544ee077771acbd0a2c0fc6d33496fe158264ddb65327
   directory: build/nyacc-1.00.2
+# Applied to the unpacked Mes tree, in this order.
+- kind: patch
+  path: files/mes-0.27.1/patches/kaem-base-address.patch
+  directory: build/mes-0.27.1
+- kind: patch
+  path: files/mes-0.27.1/patches/config-h.patch
+  directory: build/mes-0.27.1
+- kind: patch
+  path: files/mes-0.27.1/patches/wait4.patch
+  directory: build/mes-0.27.1
+- kind: patch
+  path: files/mes-0.27.1/patches/mescc-scm.patch
+  directory: build/mes-0.27.1
 
 config:
   env:
