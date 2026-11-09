@@ -1,7 +1,7 @@
-kind: kaem
+kind: exec
 
 build-depends:
-- boot/base.bst
+- stage0.bst
 
 sources:
 - kind: local
@@ -9,5 +9,5 @@ sources:
 
 config:
   commands:
-  - mkdir -p ${DESTDIR}${BINDIR}
-  - M2-Mesoplanet --architecture ${ARCH} -f src/checksum-transcriber.c -o ${DESTDIR}${BINDIR}/checksum-transcriber
+  - mkdir -p %{destdir}%{bindir}
+  - M2-Mesoplanet --architecture %{arch} -f src/checksum-transcriber.c -o %{destdir}%{bindir}/checksum-transcriber

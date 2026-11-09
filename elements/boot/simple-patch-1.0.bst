@@ -1,7 +1,7 @@
-kind: kaem
+kind: exec
 
 build-depends:
-- boot/base.bst
+- stage0.bst
 
 sources:
 - kind: local
@@ -9,5 +9,5 @@ sources:
 
 config:
   commands:
-  - mkdir -p ${DESTDIR}${BINDIR}
-  - M2-Mesoplanet --architecture ${ARCH} -f src/simple-patch.c -o ${DESTDIR}${BINDIR}/simple-patch
+  - mkdir -p %{destdir}%{bindir}
+  - M2-Mesoplanet --architecture %{arch} -f src/simple-patch.c -o %{destdir}%{bindir}/simple-patch

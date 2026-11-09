@@ -1,0 +1,17 @@
+# Defaults for the exec element kind.
+variables:
+  prefix: /usr
+  bindir: "%{prefix}/bin"
+  libdir: "%{prefix}/lib/mes"
+  incdir: "%{prefix}/include/mes"
+  arch: x86
+  build-root: /build
+  # Steps install under the install root and nothing else is collected.
+  destdir: "%{install-root}"
+
+config:
+  env:
+    PATH: "%{bindir}:/%{arch}/bin"
+    M2LIBC_PATH: /M2libc
+    ARCH: "%{arch}"
+    ARCH_DIR: "%{arch}"
