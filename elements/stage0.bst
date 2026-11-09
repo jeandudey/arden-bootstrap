@@ -11,3 +11,8 @@ sources:
 config:
   command:
   - ./bootstrap-seeds/POSIX/x86/kaem-optional-seed
+  # The build tree is the whole stage0-posix checkout (33M); everything later
+  # steps use is the tools and the M2libc headers.
+  keep:
+  - x86/bin
+  - M2libc

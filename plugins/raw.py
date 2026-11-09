@@ -6,15 +6,19 @@ class RawElement(Element):
     BST_MIN_VERSION = "2.0"
 
     def configure(self, node):
-        node.validate_keys(["command"])
+        node.validate_keys(["command", "keep"])
         self.command = node.get_str_list("command")
+        self.keep = node.get_str_list("keep", [])
         self.root = self.get_variable("install-root")
 
     def preflight(self):
         pass
 
     def get_unique_key(self):
-        return {"command": self.command}
+        key = {"command": self.command}
+        if self.keep:
+            key["keep"] = self.keep
+        return key
 
     def configure_sandbox(self, sandbox):
         sandbox.set_environment(self.get_environment())
@@ -34,7 +38,18 @@ class RawElement(Element):
         code = sandbox.run(command, cwd=self.root, label="raw")
         if code != 0:
             raise ElementError(f"{self.command} exited with {code}")
-        return self.root
+        if not self.keep:
+            return self.root
+
+        # Hand on only the listed paths: the rest is the build tree.
+        vdir = sandbox.get_virtual_directory()
+        root = self.root.strip("/")
+        out = vdir.open_directory("keep-out", create=True)
+        for path in self.keep:
+            path = path.strip("/")
+            src = vdir.open_directory(posixpath.join(root, path))
+            out.open_directory(path, create=True).import_files(src)
+        return "/keep-out"
 
 def setup():
     return RawElement
