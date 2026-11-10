@@ -9,7 +9,7 @@ build-depends:
 - stage0/cp.bst
 - stage0/mkdir.bst
 - stage0/replace.bst
-- mes/sources.bst
+- mes/source.bst
 
 runtime-depends:
 - stage0/blood-elf.bst
@@ -18,7 +18,7 @@ runtime-depends:
 - mes/arch-headers.bst
 - mes/config.bst
 - mes/mes-m2.bst
-- mes/sources.bst
+- mes/source.bst
 - nyacc/nyacc.bst
 - nyacc/source.bst
 

@@ -13,7 +13,7 @@ build-depends:
 - stage0/m1.bst
 - stage0/m2-0.bst
 - stage0/m2libc.bst
-- mes/sources.bst
+- mes/source.bst
 - mes/config.bst
 
 variables:

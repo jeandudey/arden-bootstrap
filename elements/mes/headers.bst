@@ -8,7 +8,7 @@ build-depends:
 - stage0/cp.bst
 - stage0/mkdir.bst
 - mes/config.bst
-- mes/sources.bst
+- mes/source.bst
 
 config:
   install:

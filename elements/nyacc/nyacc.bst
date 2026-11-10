@@ -9,7 +9,7 @@ build-depends:
 - stage0/cp.bst
 - stage0/mkdir.bst
 - stage0/rm.bst
-- mes/sources.bst
+- mes/source.bst
 - mes/config.bst
 - nyacc/source.bst
 - mes/mes-m2.bst
