@@ -8,10 +8,10 @@ build-depends:
 - stage0/chmod.bst
 - stage0/cp.bst
 - stage0/mkdir.bst
-- tcc/boot2/tcc.bst
+- tcc/boot3/tcc.bst
 
 runtime-depends:
-- tcc/boot2/libs.bst
+- tcc/libs.bst
 - mes/headers.bst
 
 config:
@@ -19,10 +19,10 @@ config:
   - from: "%{bindir}"
     to: "%{bindir}"
     rename:
-      tcc-boot2: tcc
+      tcc-boot3: tcc
     mode: "755"
   - from: "%{bindir}"
     to: "%{bindir}"
     rename:
-      tcc-boot2: tcc-0.9.27
+      tcc-boot3: tcc-0.9.27
     mode: "755"

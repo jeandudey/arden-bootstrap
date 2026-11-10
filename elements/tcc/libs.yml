@@ -1,5 +1,11 @@
 (@): elements/tcc/tcc.yml
 
+variables:
+  # Mes's libtcc1.c has stubs for the conversions between floating point and
+  # 64 bit integers; the final libraries are built from tcc's own.
+  libtcc1-src: lib/libtcc1.c
+  libtcc1-flags: -D HAVE_CONFIG_H=1 -D HAVE_LONG_LONG=1 -D HAVE_FLOAT=1 -I include -I include/linux/%{mes-cpu}
+
 config:
   (?):
     - buildarch == "rv64g":
@@ -274,7 +280,7 @@ config:
           - catm crti.o
           - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -I include -I include/linux/%{mes-cpu} -o unified-libc.o unified-libc.c"
           - "%{tcc-compiler} -ar cr libc.a unified-libc.o"
-          - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -D HAVE_LONG_LONG=1 -D HAVE_FLOAT=1 -I include -I include/linux/%{mes-cpu} -o libtcc1.o lib/libtcc1.c"
+          - "%{tcc-compiler} -c %{libtcc1-flags} -o libtcc1.o %{libtcc1-src}"
           - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -D HAVE_LONG_LONG=1 -D HAVE_FLOAT=1 -I include -I include/linux/%{mes-cpu} -o lib-arm64.o %{tcc-src}/lib/lib-arm64.c"
           - "%{tcc-compiler} -ar cr libtcc1.a libtcc1.o lib-arm64.o"
           - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -I include -I include/linux/%{mes-cpu} -o getopt.o lib/posix/getopt.c"
@@ -551,7 +557,7 @@ config:
           - catm crti.o
           - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -I include -I include/linux/%{mes-cpu} -o unified-libc.o unified-libc.c"
           - "%{tcc-compiler} -ar cr libc.a unified-libc.o"
-          - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -D HAVE_LONG_LONG=1 -D HAVE_FLOAT=1 -I include -I include/linux/%{mes-cpu} -o libtcc1.o lib/libtcc1.c"
+          - "%{tcc-compiler} -c %{libtcc1-flags} -o libtcc1.o %{libtcc1-src}"
           - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -D HAVE_LONG_LONG=1 -D HAVE_FLOAT=1 -D TCC_TARGET_X86_64=1 -I include -I include/linux/%{mes-cpu} -o va_list.o %{tcc-src}/lib/va_list.c"
           - "%{tcc-compiler} -ar cr libtcc1.a libtcc1.o va_list.o"
           - "%{tcc-compiler} -c -D HAVE_CONFIG_H=1 -I include -I include/linux/%{mes-cpu} -o getopt.o lib/posix/getopt.c"
