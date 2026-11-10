@@ -10,19 +10,8 @@ a root with a C compiler, make, a shell and the core tools (i686, musl).
 Another project takes it as a junction and depends on `bootstrap.bst:live-bootstrap/all.bst`.
 The project name is part of every cache key.
 
-## Updating
-
-The elements in `elements/live-bootstrap/` are generated, not written by hand:
-
-    git clone https://github.com/fosslinux/live-bootstrap          # at the commit steps.bst pins
-    tools/gen-lb-elements.py --lb PATH/TO/live-bootstrap
-
-The generator pins the checkout's commit in `live-bootstrap/steps.bst`, writes `include/lb-aliases.yml`
-and rewrites every generated element. Checksums live-bootstrap does not publish are in
-`tools/lb-pinned-checksums.txt`. A host the generator has no name for goes into `HOST_ALIASES`
-in the generator (an alias names the site, not the DNS name).
-
 ## Plugins
 
-`plugins/lbstep.py` (the `lbstep` element: runs one step in the sandbox) and `plugins/raw.py`
-(the `raw` element, for stage0). The `git` source comes from `buildstream-plugins`.
+`plugins/stage0.py` (the `stage0` element: the stage0 tools, from hex0 up) and `plugins/exec.py`
+(the `exec` element: a step's commands run directly, with no shell), as well as `plugins/kaem.py` and
+`plugins/raw.py`. The `git` source comes from `buildstream-plugins`.
