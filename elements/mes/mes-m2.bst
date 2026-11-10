@@ -1,5 +1,7 @@
 kind: stage0
-(@): elements/stage0/m2libc.yml
+(@):
+- elements/stage0/m2libc.yml
+- elements/mes/cpu.yml
 
 description: |
   mes-m2, Mes built by M2-Planet: the steps of Mes's kaem.run (M2-Planet,
@@ -16,11 +18,6 @@ build-depends:
 
 variables:
   mes-prefix: "%{libdir}/mes"
-  (?):
-    - buildarch == "rv64g":
-        mes-cpu: riscv64
-    - buildarch == "x86-64":
-        mes-cpu: x86_64
 
 config:
   (?):

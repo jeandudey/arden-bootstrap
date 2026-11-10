@@ -1,0 +1,6 @@
+variables:
+  (?):
+    - buildarch == "rv64g":
+        mes-cpu: riscv64
+    - buildarch == "x86-64":
+        mes-cpu: x86_64

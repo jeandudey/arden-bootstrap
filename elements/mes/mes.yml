@@ -1,8 +1,12 @@
+(@): elements/mes/cpu.yml
+
 variables:
   libdir: "%{prefix}/lib"
   mes-prefix: "%{libdir}/mes"
   nyacc-prefix: "%{libdir}/nyacc"
   guile-load-path: "%{mes-prefix}/mes/module:%{mes-prefix}/module:%{nyacc-prefix}/module"
+  mes-lib: "%{prefix}/lib/%{mes-cpu}-mes"
+  mescc: "%{bindir}/mes-m2 -e main %{bindir}/mescc.scm -D HAVE_CONFIG_H=1 -I include -I include/linux/%{mes-cpu} -c"
 
 config:
   env:
