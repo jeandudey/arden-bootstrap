@@ -1,0 +1,67 @@
+printf and its kin read every integer as a long, which only holds where an int
+is passed in a slot that has been sign extended, as mescc does. With tcc on
+x86_64 an int arrives in a register whose upper half is not, so -1 printed as
+4294967295. Narrow it to an int, or an unsigned, unless the l modifier is there.
+
+--- a/lib/stdio/vfprintf.c	2026-11-10 16:11:31.655363092 +0100
++++ b/lib/stdio/vfprintf.c	2026-11-10 16:11:31.667687564 +0100
+@@ -42,6 +42,7 @@
+         int left_p = 0;
+         int precision = -1;
+         int width = -1;
++        int long_p = 0;
+         if (c == '-')
+           {
+             left_p = 1;
+@@ -83,7 +84,10 @@
+               }
+           }
+         if (c == 'l')
+-          c = *++p;
++          {
++            long_p = 1;
++            c = *++p;
++          }
+         if (c == 'l')
+           {
+             eputs ("vfprintf: skipping second: l\n");
+@@ -112,6 +116,8 @@
+           case 'X':
+             {
+               long d = va_arg (ap, long);
++              if (!long_p)
++                d = c == 'd' || c == 'i' ? (long) (int) d : (long) (unsigned) d;
+               int base = c == 'o' ? 8 : c == 'x' || c == 'X' ? 16 : 10;
+               char *s = ntoab (d, base, c != 'u' && c != 'x' && c != 'X');
+               if (c == 'X')
+--- a/lib/stdio/vsnprintf.c	2026-11-10 16:11:31.657008731 +0100
++++ b/lib/stdio/vsnprintf.c	2026-11-10 16:11:31.667738141 +0100
+@@ -45,6 +45,7 @@
+         int left_p = 0;
+         int precision = -1;
+         int width = -1;
++        int long_p = 0;
+         if (c == '-')
+           {
+             left_p = 1;
+@@ -86,7 +87,10 @@
+               }
+           }
+         if (c == 'l')
+-          c = *++p;
++          {
++            long_p = 1;
++            c = *++p;
++          }
+         if (c == 'l')
+           c = *++p;
+         if (c == 'l')
+@@ -119,6 +123,8 @@
+           case 'X':
+             {
+               long d = va_arg (ap, long);
++              if (!long_p)
++                d = c == 'd' || c == 'i' ? (long) (int) d : (long) (unsigned) d;
+               int base = c == 'o' ? 8 : c == 'x' || c == 'X' ? 16 : 10;
+               char *s = ntoab (d, base, c != 'u' && c != 'x' && c != 'X');
+               if (c == 'X')

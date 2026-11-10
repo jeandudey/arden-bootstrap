@@ -1,9 +1,9 @@
 kind: import
 
 description: |
-  The Mes source tree at %{libdir}/mes, as released, with three patches that
-  let tcc build its C library on x86_64: a va_list, the clobbers of _exit and
-  a signal restorer.
+  The Mes source tree at %{libdir}/mes, as released, with four patches that
+  let tcc build its C library on x86_64: a va_list, the clobbers of _exit, a
+  signal restorer and the width of printf's integers.
 
 sources:
 - kind: tar
@@ -15,6 +15,8 @@ sources:
   path: files/mes-0.28/exit-clobbers-x86_64.patch
 - kind: patch
   path: files/mes-0.28/signal-restorer-tcc-x86_64.patch
+- kind: patch
+  path: files/mes-0.28/printf-int-x86_64.patch
 
 config:
   target: "%{libdir}/mes"
