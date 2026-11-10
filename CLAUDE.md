@@ -15,3 +15,19 @@ This uses the Apache BuildStream 2.0 build system.
   obvious. Do not write comments that restate the command or describe what a tool
   does in general (such as how M2-Mesoplanet finds its toolchain on PATH). When in
   doubt, leave the comment out.
+
+- Use GNU Coding Standards for VCS commits (Git), for example:
+
+```
+Handle completely undecoded input in term (Bug#29918)
+
+* lisp/term.el (term-emulate-terminal): Avoid errors if the whole
+	decoded string is eight-bit characters.  Don't attempt to save the
+	string for next iteration in that case.
+```
+
+Use `[conditional]` for conditional changes, for example:
+
+```
+* frame.h [HAVE_X_WINDOWS] (FRAME_WINDOW_P): Macro defined.
+```
