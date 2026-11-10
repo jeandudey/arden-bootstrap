@@ -47,6 +47,8 @@ config:
       - lib/stdio/vsnprintf.c
       - lib/stdio/vsprintf.c
       - lib/stdio/vsscanf.c
+      # tcc.c calls abort, which 0.28's own list for libc+tcc leaves out.
+      - lib/stdlib/abort.c
       - lib/stdlib/qsort.c
       - lib/stdlib/strtod.c
       - lib/stdlib/strtof.c
