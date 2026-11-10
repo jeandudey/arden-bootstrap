@@ -1,0 +1,24 @@
+set -e did not apply to a subshell: a failing ( ... ) as the last command of
+an || list, which is how BuildStream's batched scripts stop on an error,
+went on to the next command.  Exit as the simple command case does.
+
+--- bash-2.05b/execute_cmd.c
++++ bash-2.05b/execute_cmd.c
+@@ -537,6 +537,17 @@
+ 	      else
+ 		exec_result = last_command_exit_value;
+ 
++	      /* A subshell that fails exits the shell under -e, unless it is
++		 the tested part of a list, or inverted.  The flag is read from
++		 the command, as ignore_return is not set yet.  */
++	      if ((command->flags & CMD_IGNORE_RETURN) == 0 && invert == 0 &&
++		  exit_immediately_on_error && exec_result != EXECUTION_SUCCESS)
++		{
++		  last_command_exit_value = exec_result;
++		  run_pending_traps ();
++		  jump_to_top_level (EXITPROG);
++		}
++
+ 	      return (last_command_exit_value = exec_result);
+ 	    }
+ 	  else
