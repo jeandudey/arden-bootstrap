@@ -14,6 +14,11 @@ build-depends:
 - nyacc/source.bst
 - mes/mes-m2.bst
 
+public:
+  bst:
+    overlap-whitelist:
+    - "%{nyacc-prefix}/module/nyacc/lang/c99/mach.d/*"
+
 config:
   commands:
   # Pregenerated, so that they are built from source.
