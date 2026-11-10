@@ -1,0 +1,38 @@
+libtcc1.a needs nothing from the C library, so that the order tcc links them in
+does not matter: va_list.c called memset, which the next line made useless,
+and assert and abort for a case that cannot happen.  The C library calls
+into libtcc1.a for __va_start, and a C library that is one archive member,
+as Mes's is, cannot be searched again after it.
+
+--- a/lib/va_list.c
++++ b/lib/va_list.c
+@@ -2,12 +2,6 @@
+ 
+ #if defined TCC_TARGET_X86_64
+ 
+-#include <assert.h>
+-
+-/* Avoid include files, they may not be available when cross compiling */
+-extern void *memset(void *s, int c, __SIZE_TYPE__ n);
+-extern void abort(void);
+-
+ /* This should be in sync with our include/stdarg.h */
+ enum __va_arg_type {
+     __va_gen_reg, __va_float_reg, __va_stack
+@@ -26,7 +20,6 @@
+ 
+ void __va_start(__va_list_struct *ap, void *fp)
+ {
+-    memset(ap, 0, sizeof(__va_list_struct));
+     *ap = *(__va_list_struct *)((char *)fp - 16);
+     ap->overflow_arg_area = (char *)fp + ap->overflow_offset;
+     ap->reg_save_area = (char *)fp - 176 - 16;
+@@ -61,7 +54,7 @@
+         return ap->overflow_arg_area - size;
+ 
+     default: /* should never happen */
+-      assert(0);
++      return 0;
+     }
+ }
+ #endif

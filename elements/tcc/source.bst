@@ -2,7 +2,8 @@ kind: import
 
 description: |
   The tcc source tree at %{libdir}/tcc-src: Mes's tinycc, the branch that
-  tracks the Mes release, with two patches: negative float constants, and qualifiers in arrays.
+  tracks the Mes release, with three patches: negative float constants,
+  qualifiers in arrays, and a va_list.c that needs nothing from the C library.
 
 sources:
 - kind: git_repo
@@ -14,6 +15,8 @@ sources:
   path: files/tinycc-mes-0.28/negative-zero.patch
 - kind: patch
   path: files/tinycc-mes-0.28/array-qualifiers.patch
+- kind: patch
+  path: files/tinycc-mes-0.28/va-list-standalone.patch
 
 config:
   target: "%{libdir}/tcc-src"
