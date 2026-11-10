@@ -1,0 +1,46 @@
+setjmp always returned 0, even after a longjmp, and longjmp restored the frame
+pointer of setjmp's own frame, so neither worked for code built by tcc on
+x86_64: bash crashed on return from a function. Write both in assembly for
+tcc, with the value longjmp is given as setjmp's result.
+
+--- a/lib/x86_64-mes-gcc/setjmp.c	2026-11-10 16:25:08.358723177 +0100
++++ b/lib/x86_64-mes-gcc/setjmp.c	2026-11-10 16:25:08.366450577 +0100
+@@ -21,6 +21,33 @@
+ #include <setjmp.h>
+ #include <stdlib.h>
+ 
++#if __TINYC__
++/* The jmp_buf holds rbp, the return address and the stack pointer after the
++   return, which is all tcc's code needs: it keeps no values in the registers
++   a call preserves.  Both are bare assembly so that no frame is in the way,
++   and longjmp's value, which is 1 for 0, is what setjmp returns.  */
++asm (".text\n"
++     ".globl setjmp\n"
++     "setjmp:\n"
++     "mov %rbp,0x00(%rdi)\n"
++     "mov (%rsp),%rdx\n"
++     "mov %rdx,0x08(%rdi)\n"
++     "lea 0x08(%rsp),%rdx\n"
++     "mov %rdx,0x10(%rdi)\n"
++     "xor %eax,%eax\n"
++     "ret\n"
++     ".globl longjmp\n"
++     "longjmp:\n"
++     "mov %esi,%eax\n"
++     "test %eax,%eax\n"
++     "jnz .Llongjmp_value\n"
++     "mov $1,%eax\n"
++     ".Llongjmp_value:\n"
++     "mov 0x00(%rdi),%rbp\n"
++     "mov 0x10(%rdi),%rsp\n"
++     "jmp *0x08(%rdi)\n");
++#else
++
+ void
+ longjmp (jmp_buf env, int val)
+ {
+@@ -52,3 +79,4 @@
+   env[0].__sp = p[0];
+   return 0;
+ }
++#endif
