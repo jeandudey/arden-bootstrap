@@ -17,4 +17,3 @@ build-depends:
 variables:
   tcc-cc: tcc-boot1
   tcc-out: tcc-boot2
-  tcc-extra-flags: ""

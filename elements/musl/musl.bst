@@ -8,4 +8,4 @@ description: |
 
 build-depends:
   (>):
-  - tcc/musl/toolchain.bst
+  - tcc/musl-0/toolchain.bst

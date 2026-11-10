@@ -5,6 +5,6 @@ description: |
   libtcc1.a, and musl's headers and libraries.
 
 depends:
-- musl/musl-0.bst
+- musl/musl.bst
 - tcc/musl/libtcc1.bst
 - tcc/musl/tcc.bst

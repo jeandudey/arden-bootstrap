@@ -1,6 +1,7 @@
 (@): elements/tcc/tcc.yml
 
 variables:
+  tcc-extra-flags: ""
   tcc-inputs: ""
 
 config:

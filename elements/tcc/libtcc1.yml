@@ -1,0 +1,19 @@
+(@): elements/tcc/target.yml
+
+build-depends:
+- bash/bash.bst
+- coreutils/coreutils.bst
+- tcc/source.bst
+
+config:
+  build-commands:
+  - |
+    for o in %{tcc-libtcc1-objects}; do
+      tcc -c -D TCC_TARGET_%{tcc-target}=1 -o $o.o %{tcc-src}/lib/$o.c
+      objects="$objects $o.o"
+    done
+    tcc -ar cr libtcc1.a $objects
+  install-commands:
+  - |
+    mkdir -p %{install-root}%{libdir}/tcc
+    cp libtcc1.a %{install-root}%{libdir}/tcc/libtcc1.a

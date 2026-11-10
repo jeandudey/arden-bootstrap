@@ -2,23 +2,22 @@ kind: exec
 (@): elements/tcc/boot.yml
 
 description: |
-  tcc configured for musl, built by the tcc of the Mes world, which is given
-  musl's headers and libraries by hand, as it looks for the Mes C library's.
-  Its libtcc1.a is the Mes world's for this one link only.
+  tcc built by the tcc that is built against musl-0, and against musl, so
+  that it is the first to be built with what it links: it finds musl's headers
+  and libraries by itself, and there is nothing to give it by hand.
 
 build-depends:
+- musl/musl.bst
 - stage0/catm.bst
 - stage0/chmod.bst
 - stage0/cp.bst
 - stage0/mkdir.bst
-- musl/musl-0.bst
+- tcc/musl-0/libtcc1.bst
+- tcc/musl-0/tcc.bst
 - tcc/source.bst
-- tcc/tcc.bst
 
 variables:
   tcc-cc: tcc
   tcc-out: tcc
   incdir: "%{prefix}/include"
   tcc-lib: "%{prefix}/lib"
-  tcc-extra-flags: -nostdinc -nostdlib
-  tcc-inputs: "%{tcc-lib}/crt1.o %{tcc-lib}/libc.a %{prefix}/lib/mes/tcc/libtcc1.a"
