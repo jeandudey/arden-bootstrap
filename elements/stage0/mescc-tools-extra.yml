@@ -13,8 +13,6 @@ variables:
 config:
   env:
     M2LIBC_PATH: "%{libdir}/m2libc"
-  # M2-Mesoplanet runs M2-Planet, M1, blood-elf and hex2 from PATH, which
-  # its runtime dependencies provide.
   dirs:
     - "%{destdir}%{bindir}"
   commands:
