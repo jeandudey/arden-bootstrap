@@ -32,10 +32,7 @@ config:
   configure-commands:
     (<):
     - |
-      patch -Np1 -i %{libdir}/live-bootstrap/musl-1.1.24/files/disable_ctype_headers.patch
       patch -Np1 -i %{libdir}/live-bootstrap/musl-1.1.24/patches/makefile.patch
-      rm src/ctype/iswalpha.c src/ctype/iswalnum.c src/ctype/iswctype.c src/ctype/towctrans.c
-      rm include/iconv.h src/locale/iconv.c src/locale/iconv_close.c
       rm -rf src/complex
       cd src/math/x86_64
       rm sqrt.s sqrtf.s lrint.s lrintf.s llrint.s llrintf.s fabs.s fabsf.s
