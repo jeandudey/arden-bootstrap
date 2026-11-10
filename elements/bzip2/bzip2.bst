@@ -1,36 +1,26 @@
-kind: exec
+kind: make
 
 description: |
-  bzip2 1.0.8, built by make and tcc with the two patches live-bootstrap
-  applies for the Mes C library.
+  bzip2 1.0.8 again, built by make and the tcc that is built against musl,
+  without the patches for the Mes C library; bunzip2 and bzcat are links.
 
 build-depends:
-- bzip2/source.bst
-- stage0/chmod.bst
-- stage0/cp.bst
-- stage0/mkdir.bst
-- stage0/rm.bst
-- live-bootstrap/source.bst
+- bash/bash.bst
+- coreutils/coreutils.bst
 - make/make.bst
-- patch/patch.bst
-- tcc/tcc.bst
+- tcc/musl/toolchain.bst
+
+sources:
+- kind: tar
+  url: "sourceware:pub/bzip2/bzip2-1.0.8.tar.gz"
+  ref: ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269
 
 variables:
-  libdir: "%{prefix}/lib"
-  lb-bzip2: "%{libdir}/live-bootstrap/bzip2-1.0.8"
+  make: make CC=tcc "AR=tcc -ar" bzip2
 
 config:
-  commands:
-  - cd: "%{libdir}/bzip2-src"
-  - patch -Np1 -i %{lb-bzip2}/patches/mes-libc.patch
-  - patch -Np1 -i %{lb-bzip2}/patches/coreutils.patch
-  - make CC=tcc "AR=tcc -ar" LDFLAGS=-static bzip2
-  - cp bzip2 bunzip2
-  - ./bzip2 --help
-  install:
-  - from: "%{libdir}/bzip2-src"
-    to: "%{bindir}"
-    files:
-    - bzip2
-    - bunzip2
-    mode: "755"
+  install-commands:
+  - |
+    install -D bzip2 %{install-root}%{bindir}/bzip2
+    ln -sf %{bindir}/bzip2 %{install-root}%{bindir}/bunzip2
+    ln -sf %{bindir}/bzip2 %{install-root}%{bindir}/bzcat
