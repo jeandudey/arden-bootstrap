@@ -1,0 +1,30 @@
+# Common to the programs built from mescc-tools-extra, one element each.
+# An element sets `program`, which is the name of its C file and of its
+# binary.
+build-depends:
+  - stage0/m2-mesoplanet.bst
+  - stage0/mescc-tools-extra.bst
+
+variables:
+  # exec's libdir is Mes's; this is where the dependencies stage theirs
+  libdir: "%{prefix}/lib"
+  (?):
+    - buildarch == "aarch64":
+        m2libc-arch: aarch64
+    - buildarch == "rv64g":
+        m2libc-arch: riscv64
+    - buildarch == "x86-64":
+        m2libc-arch: amd64
+
+config:
+  env:
+    M2LIBC_PATH: "%{libdir}/m2libc"
+  # M2-Mesoplanet runs M2-Planet, M1, blood-elf and hex2 from PATH, which
+  # its runtime dependencies provide.
+  dirs:
+    - "%{destdir}%{bindir}"
+  commands:
+    - >-
+      M2-Mesoplanet --operating-system Linux --architecture %{m2libc-arch}
+      -f %{libdir}/mescc-tools-extra/%{program}.c
+      -o %{destdir}%{bindir}/%{program}

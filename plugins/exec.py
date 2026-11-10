@@ -30,6 +30,10 @@ Configuration:
                   from: lib             # optional directory of the files
                   files: [mes/eputs.c, stdlib/exit.c]
 
+  dirs:     directories to create before the commands run, for steps that
+            install by writing into the install root themselves, with no
+            mkdir to make the directories (the tools that provide it are
+            built by such steps);
   install:  after the commands, copy files into the install root:
 
               - from: /build/x/include
@@ -52,8 +56,10 @@ class ExecElement(Element):
     BST_MIN_VERSION = "2.0"
 
     def configure(self, node):
-        node.validate_keys(["commands", "env", "install"])
+        node.validate_keys(["commands", "dirs", "env", "install"])
         self.env = {k: self.node_subst_vars(v) for k, v in node.get_mapping("env", {}).items()}
+
+        self.dirs = [self.node_subst_vars(d) for d in node.get_sequence("dirs", [])]
 
         self.commands = []
         for item in node.get_sequence("commands", []):
@@ -102,7 +108,10 @@ class ExecElement(Element):
         pass
 
     def get_unique_key(self):
-        return {"env": self.env, "commands": self.commands, "install": self.install}
+        key = {"env": self.env, "commands": self.commands, "install": self.install}
+        if self.dirs:
+            key["dirs"] = self.dirs
+        return key
 
     def configure_sandbox(self, sandbox):
         # Nothing from BuildStream's default environment may reach the build.
@@ -119,6 +128,11 @@ class ExecElement(Element):
         vdir = sandbox.get_virtual_directory()
         vdir.open_directory("tmp", create=True)
         vdir.open_directory(self.root.strip("/"), create=True)
+
+        # Made here, for steps that write straight into the install root
+        # before there is a mkdir to make them with
+        for path in self.dirs:
+            vdir.open_directory(path.strip("/"), create=True)
 
         env = dict(self.env)
         cwd = self.build_root
