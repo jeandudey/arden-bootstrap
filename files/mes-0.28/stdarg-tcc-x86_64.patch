@@ -1,0 +1,42 @@
+TINYCC passes arguments in registers on x86_64, but Mes's va_list reads them
+off the stack, so a libc built by tcc there gets garbage from sprintf and
+friends. Use the va_list tcc brings, which its libtcc1.a implements.
+
+--- a/include/stdarg.h	2026-11-10 14:33:01.894960497 +0100
++++ b/include/stdarg.h	2026-11-10 14:33:01.903453491 +0100
+@@ -67,6 +67,35 @@
+ #define va_arg8(ap, type)  va_arg (ap, type)
+ #define va_copy(d, s)      __builtin_va_copy (d, s)
+ 
++#elif __TINYC__ && __x86_64__
++
++// TINYCC passes arguments in registers on x86_64, so it needs its own
++// va_list; __va_start and __va_arg are in its libtcc1.a.
++
++typedef struct
++{
++  unsigned int gp_offset;
++  unsigned int fp_offset;
++  union
++  {
++    unsigned int overflow_offset;
++    char *overflow_arg_area;
++  };
++  char *reg_save_area;
++} __va_list_struct;
++
++typedef __va_list_struct va_list[1];
++
++void __va_start (__va_list_struct *ap, void *fp);
++void *__va_arg (__va_list_struct *ap, int arg_type, int size, int align);
++
++#define va_start(ap, last) __va_start (ap, __builtin_frame_address (0))
++#define va_arg(ap, type)                                                \
++  (*(type *) (__va_arg (ap, __builtin_va_arg_types (type), sizeof (type), __alignof__ (type))))
++#define va_arg8(ap, type) va_arg (ap, type)
++#define va_end(ap)
++#define va_copy(dest, src) (*(dest) = *(src))
++
+ #else // ! __riscv
+ 
+ #include <sys/types.h>
