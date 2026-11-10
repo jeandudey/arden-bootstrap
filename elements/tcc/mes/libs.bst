@@ -2,15 +2,15 @@ kind: exec
 (@): elements/tcc/libs.yml
 
 description: |
-  crt1.o, libc.a, libtcc1.a and libgetopt.a, compiled by tcc-boot2.
+  crt1.o, libc.a, libtcc1.a and libgetopt.a, compiled by tcc-mes.
 
 build-depends:
 - stage0/catm.bst
 - stage0/cp.bst
 - stage0/mkdir.bst
-- tcc/tcc-boot2.bst
+- tcc/mes/tcc.bst
 - tcc/source.bst
 - mes/mes.bst
 
 variables:
-  tcc-compiler: tcc-boot2
+  tcc-compiler: tcc-mes

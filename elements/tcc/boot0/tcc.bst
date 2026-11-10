@@ -2,7 +2,7 @@ kind: exec
 (@): elements/tcc/boot.yml
 
 description: |
-  tcc-boot1, tcc built by tcc-boot0.
+  tcc-boot0, tcc built by tcc-mes.
 
 build-depends:
 - stage0/catm.bst
@@ -10,11 +10,11 @@ build-depends:
 - stage0/cp.bst
 - stage0/mkdir.bst
 - mes/mes.bst
-- tcc/tcc-boot0.bst
-- tcc/libs-boot0.bst
+- tcc/mes/tcc.bst
+- tcc/mes/libs.bst
 - tcc/source.bst
 
 variables:
-  tcc-cc: tcc-boot0
-  tcc-out: tcc-boot1
-  tcc-extra-flags: ""
+  tcc-cc: tcc-mes
+  tcc-out: tcc-boot0
+  tcc-extra-flags: "-L %{tcc-lib}"

@@ -8,10 +8,10 @@ build-depends:
 - stage0/chmod.bst
 - stage0/cp.bst
 - stage0/mkdir.bst
-- tcc/tcc-boot2.bst
+- tcc/boot2/tcc.bst
 
 runtime-depends:
-- tcc/libs-boot2.bst
+- tcc/boot2/libs.bst
 - mes/headers.bst
 
 config:
