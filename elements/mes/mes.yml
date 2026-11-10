@@ -1,0 +1,12 @@
+variables:
+  libdir: "%{prefix}/lib"
+  mes-prefix: "%{libdir}/mes"
+  nyacc-prefix: "%{libdir}/nyacc"
+  guile-load-path: "%{mes-prefix}/mes/module:%{mes-prefix}/module:%{nyacc-prefix}/module"
+
+config:
+  env:
+    MES_PREFIX: "%{mes-prefix}"
+    GUILE_LOAD_PATH: "%{guile-load-path}"
+    MES_ARENA: "20000000"
+    MES_MAX_ARENA: "20000000"
