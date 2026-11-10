@@ -1,0 +1,30 @@
+Negative floating-point constants came out as NaN: the -0.0 that unary minus
+subtracts from was made with -1.0 * 0.0, which each stage of the bootstrap
+computed with the float handling of the stage before, and a NaN, once there,
+was passed down for good. Build -0.0 from its bits.
+
+--- a/tccgen.c	2026-11-10 15:23:32.078454082 +0100
++++ b/tccgen.c	2026-11-10 15:23:32.086971794 +0100
+@@ -4787,12 +4787,16 @@
+ 	       subtract(-0, x).  */
+ 	    vpush(&vtop->type);
+ #if HAVE_FLOAT
+-	    if (t == VT_FLOAT)
+-	        vtop->c.f = -1.0 * 0.0;
+-	    else if (t == VT_DOUBLE)
+-	        vtop->c.d = -1.0 * 0.0;
+-	    else
+-	        vtop->c.ld = -1.0 * 0.0;
++	    {
++	        union { double d; unsigned long long i; } negative_zero;
++	        negative_zero.i = 0x8000000000000000ULL;
++	        if (t == VT_FLOAT)
++	            vtop->c.f = negative_zero.d;
++	        else if (t == VT_DOUBLE)
++	            vtop->c.d = negative_zero.d;
++	        else
++	            vtop->c.ld = negative_zero.d;
++	    }
+ #endif
+ 	} else
+ 	    vpushi(0);
