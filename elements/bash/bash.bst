@@ -14,7 +14,7 @@ build-depends:
 - make/make.bst
 - oyacc/oyacc.bst
 - patch/patch.bst
-- sed/sed.bst
+- sed/sed-0.bst
 - stage0/catm.bst
 - tcc/tcc.bst
 

@@ -6,7 +6,7 @@ build-depends:
 - live-bootstrap/source.bst
 - make/make.bst
 - patch/patch.bst
-- sed/sed.bst
+- sed/sed-0.bst
 
 sources:
 - kind: tar
