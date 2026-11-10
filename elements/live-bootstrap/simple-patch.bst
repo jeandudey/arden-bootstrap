@@ -19,9 +19,9 @@ config:
   env:
     M2LIBC_PATH: "%{libdir}/m2libc"
   dirs:
-  - "%{destdir}%{bindir}"
+  - "%{install-root}%{bindir}"
   commands:
   - >-
     M2-Mesoplanet --operating-system Linux --architecture %{m2libc-arch}
     -f %{libdir}/live-bootstrap/simple-patch-1.0/src/simple-patch.c
-    -o %{destdir}%{bindir}/simple-patch
+    -o %{install-root}%{bindir}/simple-patch

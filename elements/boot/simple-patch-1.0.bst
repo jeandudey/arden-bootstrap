@@ -9,5 +9,5 @@ sources:
 
 config:
   commands:
-  - mkdir -p %{destdir}%{bindir}
-  - M2-Mesoplanet --architecture %{arch} -f src/simple-patch.c -o %{destdir}%{bindir}/simple-patch
+  - mkdir -p %{install-root}%{bindir}
+  - M2-Mesoplanet --architecture %{arch} -f src/simple-patch.c -o %{install-root}%{bindir}/simple-patch

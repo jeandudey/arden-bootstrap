@@ -9,5 +9,5 @@ sources:
 
 config:
   commands:
-  - mkdir -p %{destdir}%{bindir}
-  - M2-Mesoplanet --architecture %{arch} -f src/checksum-transcriber.c -o %{destdir}%{bindir}/checksum-transcriber
+  - mkdir -p %{install-root}%{bindir}
+  - M2-Mesoplanet --architecture %{arch} -f src/checksum-transcriber.c -o %{install-root}%{bindir}/checksum-transcriber

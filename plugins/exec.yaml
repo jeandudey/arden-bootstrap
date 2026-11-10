@@ -6,8 +6,6 @@ variables:
   incdir: "%{prefix}/include/mes"
   arch: x86
   build-root: /build
-  # Steps install under the install root and nothing else is collected.
-  destdir: "%{install-root}"
 
 config:
   env:

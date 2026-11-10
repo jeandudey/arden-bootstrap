@@ -16,7 +16,7 @@ Configuration:
             in exec.yaml).
   commands: run in order. An item is one of:
 
-              - M2-Mesoplanet -f src/x.c -o %{destdir}%{bindir}/x
+              - M2-Mesoplanet -f src/x.c -o %{install-root}%{bindir}/x
                   a command line, split like a shell would split quotes but
                   with nothing else: no variables, pipes or redirections;
               - [M2-Planet, -f, a.c, -f, b.c]

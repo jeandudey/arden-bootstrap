@@ -14,9 +14,9 @@ config:
   env:
     M2LIBC_PATH: "%{libdir}/m2libc"
   dirs:
-    - "%{destdir}%{bindir}"
+    - "%{install-root}%{bindir}"
   commands:
     - >-
       M2-Mesoplanet --operating-system Linux --architecture %{m2libc-arch}
       -f %{libdir}/mescc-tools-extra/%{program}.c
-      -o %{destdir}%{bindir}/%{program}
+      -o %{install-root}%{bindir}/%{program}
