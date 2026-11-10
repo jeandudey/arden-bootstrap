@@ -1,0 +1,31 @@
+tcc's assembler does not take the @PLT suffix, which a static link does not
+need, so call and jump to setjmp and exp2l plainly.
+
+--- a/src/signal/x86_64/sigsetjmp.s
++++ b/src/signal/x86_64/sigsetjmp.s
+@@ -11,7 +11,7 @@
+ 	mov %rbx,72+8(%rdi)
+ 	mov %rdi,%rbx
+ 
+-	call setjmp@PLT
++	call setjmp
+ 
+ 	pushq 64(%rbx)
+ 	mov %rbx,%rdi
+@@ -21,4 +21,4 @@
+ .hidden __sigsetjmp_tail
+ 	jmp __sigsetjmp_tail
+ 
+-1:	jmp setjmp@PLT
++1:	jmp setjmp
+--- a/src/math/x86_64/expl.s
++++ b/src/math/x86_64/expl.s
+@@ -37,7 +37,7 @@
+ 	fstpt (%rsp)
+ 	fstpt 16(%rsp)
+ 	fstpt 32(%rsp)
+-	call exp2l@PLT
++	call exp2l
+ 		# if 2^hi == inf return 2^hi
+ 	fld %st(0)
+ 	fstpt (%rsp)
