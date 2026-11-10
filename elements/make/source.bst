@@ -1,0 +1,12 @@
+kind: import
+
+description: |
+  The make 3.82 source tree at %{libdir}/make-src.
+
+sources:
+- kind: tar
+  url: "kernel-mirror:gnu/make/make-3.82.tar.bz2"
+  ref: e2c1a73f179c40c71e2fe8abf8a8a0688b8499538512984da4a76958d0402966
+
+config:
+  target: "%{libdir}/make-src"
