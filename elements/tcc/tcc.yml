@@ -1,0 +1,15 @@
+(@): elements/mes/mes.yml
+
+variables:
+  tcc-src: "%{libdir}/tcc-src"
+  tcc-lib: "%{prefix}/lib/mes"
+  (?):
+    - buildarch == "rv64g":
+        tcc-target: RISCV64
+    - buildarch == "x86-64":
+        tcc-target: X86_64
+
+config:
+  env:
+    MES_ARENA: "30000000"
+    MES_MAX_ARENA: "30000000"

@@ -1,0 +1,26 @@
+(@): elements/tcc/tcc.yml
+
+config:
+  commands:
+  - cd: "%{tcc-src}"
+  - catm config.h
+  - >-
+    %{bindir}/%{tcc-cc}
+    -g -v -static -o %{tcc-out}
+    -D BOOTSTRAP=1 -D HAVE_FLOAT=1 -D HAVE_BITFIELD=1 -D HAVE_LONG_LONG=1 -D HAVE_SETJMP=1
+    -I . -I %{incdir} -D TCC_TARGET_%{tcc-target}=1
+    -D CONFIG_TCCDIR=\"%{tcc-lib}/tcc\" -D CONFIG_TCC_CRTPREFIX=\"%{tcc-lib}\"
+    -D CONFIG_TCC_ELFINTERP=\"/mes/loader\"
+    -D CONFIG_TCC_LIBPATHS=\"%{tcc-lib}:%{tcc-lib}/tcc\"
+    -D CONFIG_TCC_SYSINCLUDEPATHS=\"%{incdir}\"
+    -D TCC_LIBGCC=\"%{tcc-lib}/libc.a\" -D TCC_LIBTCC1=\"libtcc1.a\"
+    -D CONFIG_TCCBOOT=1 -D CONFIG_TCC_STATIC=1 -D CONFIG_USE_LIBGCC=1
+    -D TCC_VERSION=\"0.9.27\" -D ONE_SOURCE=1
+    -L . %{tcc-extra-flags} tcc.c
+  - "./%{tcc-out} -version"
+  install:
+  - from: "%{tcc-src}"
+    to: "%{bindir}"
+    files:
+    - "%{tcc-out}"
+    mode: "755"
