@@ -1,0 +1,15 @@
+_exit loads the syscall number into rax and then the status from its input
+operand, without telling the compiler it uses rax and rdi. gcc happens to
+keep the status elsewhere, but tcc puts it in rax, so every program exited
+with status 0x3c. Declare the clobbers, as _write does.
+
+--- a/lib/linux/x86_64-mes-gcc/_exit.c	2026-11-10 15:33:39.490907574 +0100
++++ b/lib/linux/x86_64-mes-gcc/_exit.c	2026-11-10 15:33:39.500111297 +0100
+@@ -32,6 +32,7 @@
+        "syscall \n\t"
+        : // no outputs "=" (r)
+        : "rm" (code)
++       : "rax", "rdi"
+        );
+   // not reached
+   _exit (0);

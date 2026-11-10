@@ -1,0 +1,36 @@
+signal sets SA_RESTORER on x86_64 but no restorer, on the belief that the kernel
+supplies one. It does not, so a program returning from any signal handler
+jumped to NULL, as make did on SIGCHLD. Give tcc's build a bare rt_sigreturn
+restorer; mescc has no top-level asm and is left as it was.
+
+--- a/lib/linux/signal.c	2026-11-10 15:44:57.556020679 +0100
++++ b/lib/linux/signal.c	2026-11-10 15:44:57.563377936 +0100
+@@ -31,6 +31,18 @@
+ }
+ #endif
+ 
++#if __TINYC__ && __x86_64__
++/* The kernel returns from a signal handler to sa_restorer, which has to be
++   the bare rt_sigreturn system call: a function prologue would move the stack
++   pointer off the signal frame.  */
++void _restorer_x86_64 (void);
++asm (".text\n"
++     ".globl _restorer_x86_64\n"
++     "_restorer_x86_64:\n"
++     "mov $0x0f,%rax\n"
++     "syscall\n");
++#endif
++
+ sighandler_t
+ signal (int signum, sighandler_t action)
+ {
+@@ -62,6 +74,9 @@
+ #if __x86_64__
+   /* Tell kernel that we use a restorer, on penalty of segfault.  */
+   setup_action.sa_flags |= SA_RESTORER;
++#if __TINYC__
++  setup_action._foo0 = (long) _restorer_x86_64;
++#endif
+ #endif
+   int r = _sys_call4 (SYS_rt_sigaction, signum, (long) &setup_action, (long) &old, sizeof (sigset_t));
+   if (r)
