@@ -1,4 +1,5 @@
 kind: stage0
+(@): elements/stage0/m2libc.yml
 sources:
 - kind: git_repo
   url: github:oriansj/M2-Mesoplanet
@@ -16,14 +17,6 @@ runtime-depends:
   - stage0/m1.bst
   - stage0/m2.bst
   - stage0/m2libc.bst
-variables:
-  (?):
-    - buildarch == "aarch64":
-        m2libc-arch: aarch64
-    - buildarch == "rv64g":
-        m2libc-arch: riscv64
-    - buildarch == "x86-64":
-        m2libc-arch: amd64
 config:
   assembler: "%{bindir}/hex2"
   link-flags: ["--little-endian", "--base-address", "0x00600000"]

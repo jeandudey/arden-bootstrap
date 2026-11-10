@@ -1,4 +1,5 @@
 kind: stage0
+(@): elements/stage0/m2libc.yml
 build-depends:
 - stage0/catm-0.bst
 - stage0/cc.bst
@@ -6,14 +7,6 @@ build-depends:
 - stage0/m0.bst
 - stage0/m2-planet.bst
 - stage0/m2libc.bst
-variables:
-  (?):
-    - buildarch == "aarch64":
-        m2libc-arch: aarch64
-    - buildarch == "rv64g":
-        m2libc-arch: riscv64
-    - buildarch == "x86-64":
-        m2libc-arch: amd64
 config:
   assembler: "%{bindir}/hex2-0"
   sources:
