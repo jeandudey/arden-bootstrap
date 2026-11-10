@@ -1,0 +1,39 @@
+build-depends:
+- bash/bash.bst
+- coreutils/coreutils.bst
+- flex/flex.bst
+- live-bootstrap/source.bst
+- m4/m4.bst
+- make/make.bst
+- patch/patch.bst
+- sed/sed.bst
+- tcc/musl/toolchain.bst
+
+runtime-depends:
+- m4/m4.bst
+
+sources:
+- kind: tar
+  url: "kernel-mirror:gnu/bison/bison-3.4.1.tar.xz"
+  ref: 27159ac5ebf736dffd5636fd2cd625767c9e437de65baa63cb0de83570bd820d
+
+variables:
+  lb-bison: "%{libdir}/live-bootstrap/bison-3.4.1"
+  # The makefile builds the libraries by running make in their directories.  The
+  # tarball has a GNUmakefile, which make would read first, so name the makefile.
+  make: make -j1 -f Makefile %{make-args}
+  make-install: make -j1 -f Makefile %{make-install-args}
+
+config:
+  build-commands:
+    (<):
+    - |
+      cp %{lb-bison}/files/config.h %{lb-bison}/files/configmake.h .
+      patch -Np1 -i %{lb-bison}/patches/fseterr.patch
+      patch -Np1 -i %{lb-bison}/patches/missing-includes.patch
+      mv lib/textstyle.in.h lib/textstyle.h
+      rm src/parse-gram.c src/parse-gram.h src/scan-code.c src/scan-gram.c src/scan-skel.c
+      %{bison-parser}
+      cp %{lb-bison}/mk/main.mk Makefile
+      cp %{lb-bison}/mk/lib.mk lib/Makefile
+      cp %{lb-bison}/mk/src.mk src/Makefile
