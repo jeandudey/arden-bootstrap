@@ -1,13 +1,6 @@
-(@): elements/mes/mes.yml
-
-variables:
-  tcc-src: "%{libdir}/tcc-src"
-  tcc-lib: "%{prefix}/lib/mes"
-  (?):
-    - buildarch == "rv64g":
-        tcc-target: RISCV64
-    - buildarch == "x86-64":
-        tcc-target: X86_64
+(@):
+- elements/mes/mes.yml
+- elements/tcc/target.yml
 
 config:
   env:

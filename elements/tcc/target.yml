@@ -1,0 +1,10 @@
+variables:
+  tcc-src: "%{libdir}/tcc-src"
+  tcc-lib: "%{prefix}/lib/mes"
+  (?):
+    - buildarch == "rv64g":
+        tcc-target: RISCV64
+        tcc-libtcc1-objects: libtcc1 lib-arm64
+    - buildarch == "x86-64":
+        tcc-target: X86_64
+        tcc-libtcc1-objects: libtcc1 va_list

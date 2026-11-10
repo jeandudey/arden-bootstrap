@@ -1,5 +1,5 @@
 kind: autotools
-(@): elements/mes/cpu.yml
+(@): elements/musl/musl.yml
 
 description: |
   musl 1.1.24 built by tcc against the Mes C library, as live-bootstrap does
@@ -9,43 +9,5 @@ description: |
   left out, and musl's own C ones are used.
 
 build-depends:
-- bash/bash.bst
-- coreutils/coreutils.bst
-- live-bootstrap/source.bst
-- make/make.bst
-- patch/patch.bst
-- sed/sed.bst
-- tcc/tcc.bst
-
-sources:
-- kind: tar
-  url: "musl:releases/musl-1.1.24.tar.gz"
-  ref: 1370c9a812b2cf2a7d92802510cca0058cc37e66a7bedd70051f0a34015022a3
-- kind: patch
-  path: files/musl-1.1.24/fenv-x86_64.patch
-- kind: patch
-  path: files/musl-1.1.24/va_list-x86_64.patch
-- kind: patch
-  path: files/musl-1.1.24/plt-x86_64.patch
-- kind: patch
-  path: files/musl-1.1.24/syscall-x86_64.patch
-
-environment:
-  CC: tcc
-
-variables:
-  conf-local: --host=%{mes-cpu} --disable-shared
-  make-args: CROSS_COMPILE= "AR=tcc -ar" RANLIB=true CFLAGS=-DSYSCALL_NO_TLS
-
-config:
-  configure-commands:
-    (<):
-    - |
-      patch -Np1 -i %{libdir}/live-bootstrap/musl-1.1.24/files/disable_ctype_headers.patch
-      patch -Np1 -i %{libdir}/live-bootstrap/musl-1.1.24/patches/makefile.patch
-      rm src/ctype/iswalpha.c src/ctype/iswalnum.c src/ctype/iswctype.c src/ctype/towctrans.c
-      rm include/iconv.h src/locale/iconv.c src/locale/iconv_close.c
-      rm -rf src/complex
-      cd src/math/x86_64
-      rm sqrt.s sqrtf.s lrint.s lrintf.s llrint.s llrintf.s fabs.s fabsf.s
-      cd ../../..
+  (>):
+  - tcc/tcc.bst

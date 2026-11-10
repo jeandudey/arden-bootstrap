@@ -1,5 +1,8 @@
 (@): elements/tcc/tcc.yml
 
+variables:
+  tcc-inputs: ""
+
 config:
   commands:
   - cd: "%{tcc-src}"
@@ -16,7 +19,7 @@ config:
     -D TCC_LIBGCC=\"%{tcc-lib}/libc.a\" -D TCC_LIBTCC1=\"libtcc1.a\"
     -D CONFIG_TCCBOOT=1 -D CONFIG_TCC_STATIC=1 -D CONFIG_USE_LIBGCC=1
     -D TCC_VERSION=\"0.9.27\" -D ONE_SOURCE=1
-    -L . %{tcc-extra-flags} tcc.c
+    -L . %{tcc-extra-flags} tcc.c %{tcc-inputs}
   - "./%{tcc-out} -version"
   install:
   - from: "%{tcc-src}"
