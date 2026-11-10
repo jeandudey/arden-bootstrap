@@ -42,11 +42,13 @@ class Stage0Element(Element):
     BST_MIN_VERSION = "2.0"
 
     def configure(self, node):
-        node.validate_keys(["architecture", "assembler", "bootstrap-mode", "compiler", "debug", "footer-flags", "footer-tool", "link-flags", "macro-assembler", "macro-flags", "sources", "target"])
+        node.validate_keys(["architecture", "assembler", "bootstrap-mode", "compiler", "debug", "defines", "footer-flags", "footer-tool", "link-flags", "macro-assembler", "macro-flags", "sources", "target"])
         self.assembler = node.get_str("assembler")
         self.compiler = node.get_str("compiler", "cc")
         self.architecture = node.get_str("architecture", None)
         self.debug = node.get_bool("debug", False)
+        # NAME=VALUE macros for M2's preprocessor, passed as -D NAME=VALUE
+        self.defines = node.get_str_list("defines", [])
         # Flags for blood-elf-0, which generates a debug footer from the
         # compiler's output. The footer follows the output in the M1 run
         self.footer_flags = node.get_str_list("footer-flags", None)
@@ -80,6 +82,8 @@ class Stage0Element(Element):
             raise ElementError(f"{self}: 'debug' is only used with compiler M2")
         if self.footer_flags is not None and self.compiler != "M2":
             raise ElementError(f"{self}: 'footer-flags' is only used with compiler M2")
+        if self.defines and self.compiler != "M2":
+            raise ElementError(f"{self}: 'defines' is only used with compiler M2")
 
         self.steps = make_steps(self.compiler, self.macro_assembler)
         self.inputs = node.get_str_list("sources")
@@ -129,6 +133,8 @@ class Stage0Element(Element):
             key["architecture"] = self.architecture
         if self.debug:
             key["debug"] = True
+        if self.defines:
+            key["defines"] = self.defines
         if not self.bootstrap_mode:
             key["bootstrap-mode"] = False
         if self.macro_flags:
@@ -181,11 +187,14 @@ class Stage0Element(Element):
             first, last = run
             output = os.path.join(WORKDIR, f"{name}.{step}-out{out_ext}")
             if self._takes_many(tool):
-                # M2 --architecture ARCH -f FILE... [--bootstrap-mode] [--debug] -o OUTPUT
+                # M2 --architecture ARCH [-D NAME=VALUE]... -f FILE... [--bootstrap-mode] [--debug] -o OUTPUT
                 # M1-0 --architecture ARCH [FLAGS] -f FILE... -o OUTPUT
                 argv = [self.tools[tool], "--architecture", self.architecture]
                 if tool != "M2":
                     argv += self.macro_flags
+                else:
+                    for define in self.defines:
+                        argv += ["-D", define]
                 for path in inputs[first : last + 1]:
                     argv += ["-f", path]
                 if tool == "M2":
