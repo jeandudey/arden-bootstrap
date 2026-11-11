@@ -17,6 +17,9 @@ build-depends:
 - sed/sed.bst
 - tcc/musl/toolchain.bst
 
+runtime-depends:
+- autoconf/autoconf-2.52.bst
+
 sources:
 - kind: tar
   url: "kernel-mirror:gnu/automake/automake-1.6.3.tar.bz2"

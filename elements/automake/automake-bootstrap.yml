@@ -1,0 +1,35 @@
+build-depends:
+- bash/bash.bst
+- coreutils/coreutils-5.0.bst
+- gawk/gawk.bst
+- grep/grep.bst
+- help2man/help2man-1.36.4.bst
+- live-bootstrap/source.bst
+- m4/m4.bst
+- make/make.bst
+- patch/patch.bst
+- perl/perl-5.6.2.bst
+- sed/sed.bst
+- tcc/musl/toolchain.bst
+
+variables:
+  # Run before bootstrap, in the source tree.
+  am-prepare: ""
+  # The programs that its own build is to use, given to configure and make.
+  am-env: ""
+  am-remove: "automake aclocal"
+
+config:
+  configure-commands:
+  - |
+    %{am-prepare}
+    ./bootstrap
+    %{am-env} ./configure --prefix=%{prefix}
+  build-commands:
+  - "%{am-env} make MAKEINFO=true"
+  install-commands:
+  - |
+    make install MAKEINFO=true DESTDIR=%{install-root}
+    for tool in %{am-remove}; do
+      rm %{install-root}%{bindir}/$tool
+    done

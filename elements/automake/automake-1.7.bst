@@ -11,6 +11,9 @@ build-depends:
   - autoconf/autoconf-2.53.bst
   - automake/automake-1.6.3.bst
 
+runtime-depends:
+- autoconf/autoconf-2.53.bst
+
 sources:
 - kind: tar
   url: "kernel-mirror:gnu/automake/automake-1.7.tar.bz2"
