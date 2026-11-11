@@ -11,7 +11,7 @@ build-depends:
 - stage0/chmod.bst
 - stage0/cp.bst
 - stage0/mkdir.bst
-- musl/musl-0.bst
+- musl/musl-1.1.24-pass0.bst
 - tcc/source.bst
 - tcc/tcc.bst
 

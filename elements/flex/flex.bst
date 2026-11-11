@@ -7,8 +7,8 @@ description: |
 
 build-depends:
 - bash/bash.bst
-- coreutils/coreutils-0.bst
-- flex/flex-0.bst
+- coreutils/coreutils-5.0-mes.bst
+- flex/flex-2.5.11.bst
 - live-bootstrap/source.bst
 - m4/m4.bst
 - make/make.bst

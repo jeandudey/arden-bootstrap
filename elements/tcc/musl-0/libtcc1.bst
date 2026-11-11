@@ -6,5 +6,5 @@ description: |
 
 build-depends:
   (>):
-  - musl/musl-0.bst
+  - musl/musl-1.1.24-pass0.bst
   - tcc/musl-0/tcc.bst

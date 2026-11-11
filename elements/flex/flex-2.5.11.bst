@@ -7,7 +7,7 @@ description: |
 
 build-depends:
 - bash/bash.bst
-- coreutils/coreutils-0.bst
+- coreutils/coreutils-5.0-mes.bst
 - heirloom-devtools/heirloom-devtools.bst
 - live-bootstrap/source.bst
 - make/make.bst

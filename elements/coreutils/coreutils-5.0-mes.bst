@@ -9,7 +9,7 @@ build-depends:
 - live-bootstrap/source.bst
 - make/make.bst
 - patch/patch.bst
-- sed/sed-0.bst
+- sed/sed-4.0.9-mes.bst
 - stage0/catm.bst
 - stage0/chmod.bst
 - stage0/cp.bst

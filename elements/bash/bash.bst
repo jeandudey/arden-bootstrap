@@ -9,12 +9,12 @@ description: |
 build-depends:
 - bash/files.bst
 - bash/source.bst
-- coreutils/coreutils-0.bst
+- coreutils/coreutils-5.0-mes.bst
 - live-bootstrap/source.bst
 - make/make.bst
 - oyacc/oyacc.bst
 - patch/patch.bst
-- sed/sed-0.bst
+- sed/sed-4.0.9-mes.bst
 - stage0/catm.bst
 - tcc/tcc.bst
 

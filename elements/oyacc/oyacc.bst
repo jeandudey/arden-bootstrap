@@ -5,7 +5,7 @@ description: |
   with its makefile and two patches, and installed by the coreutils install.
 
 build-depends:
-- coreutils/coreutils-0.bst
+- coreutils/coreutils-5.0-mes.bst
 - live-bootstrap/source.bst
 - make/make.bst
 - oyacc/source.bst

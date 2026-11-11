@@ -7,11 +7,11 @@ description: |
 
 build-depends:
 - bash/bash.bst
-- coreutils/coreutils-0.bst
+- coreutils/coreutils-5.0-mes.bst
 - live-bootstrap/source.bst
 - make/make.bst
 - patch/patch.bst
-- sed/sed-0.bst
+- sed/sed-4.0.9-mes.bst
 - tcc/musl/toolchain.bst
 
 sources:
