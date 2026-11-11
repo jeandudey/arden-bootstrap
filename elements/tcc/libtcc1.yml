@@ -5,11 +5,14 @@ build-depends:
 - coreutils/coreutils-5.0-mes.bst
 - tcc/source.bst
 
+variables:
+  libtcc1-lib: "%{tcc-src}/lib"
+
 config:
   build-commands:
   - |
     for o in %{tcc-libtcc1-objects}; do
-      tcc -c -D TCC_TARGET_%{tcc-target}=1 -o $o.o %{tcc-src}/lib/$o.c
+      tcc -c -D TCC_TARGET_%{tcc-target}=1 -o $o.o %{libtcc1-lib}/$o.c
       objects="$objects $o.o"
     done
     tcc -ar cr libtcc1.a $objects

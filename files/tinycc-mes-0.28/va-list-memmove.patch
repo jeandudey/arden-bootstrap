@@ -1,0 +1,19 @@
+va_list.c copied its argument structure whole, which is a call to memmove.
+libtcc1.a is linked after the C library, which has been searched by then, so
+a program that needs __va_start and nothing else that has memmove could not be
+linked.  Copy the members.
+
+--- a/va_list.c
++++ b/va_list.c
+@@ -20,7 +20,10 @@
+ 
+ void __va_start(__va_list_struct *ap, void *fp)
+ {
+-    *ap = *(__va_list_struct *)((char *)fp - 16);
++    __va_list_struct *saved = (__va_list_struct *)((char *)fp - 16);
++    ap->gp_offset = saved->gp_offset;
++    ap->fp_offset = saved->fp_offset;
++    ap->overflow_offset = saved->overflow_offset;
+     ap->overflow_arg_area = (char *)fp + ap->overflow_offset;
+     ap->reg_save_area = (char *)fp - 176 - 16;
+ }
