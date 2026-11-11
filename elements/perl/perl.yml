@@ -11,6 +11,7 @@ variables:
   make: make -j1 -f Makefile %{make-args}
   make-install: make -j1 -f Makefile %{make-args} install DESTDIR="%{install-root}"
   make-args: PREFIX=%{prefix}
+  perl-config: "true"
   perl-prepare: |
     for file in embed keywords opcode; do
       rm -f $file.h
@@ -23,6 +24,7 @@ config:
     - |
       cp %{libdir}/live-bootstrap/%{lb-perl}/mk/main.mk Makefile
       cp %{libdir}/live-bootstrap/%{lb-perl}/files/config.h .
+      %{perl-config}
       rm -f perly.c perly.h
       bison -d perly.y
       mv perly.tab.c perly.c

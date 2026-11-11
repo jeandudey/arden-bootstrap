@@ -18,6 +18,10 @@ sources:
 
 variables:
   lb-perl: perl5.005-03
+  # Without LONGSIZE, I32 is a long, which is 64 bits, and the regular
+  # expression nodes get the wrong layout.
+  perl-config: |
+    echo '#define LONGSIZE 8' >> config.h
   perl-prepare: |
     rm -f embedvar.h
     for file in embed keywords opcode; do
