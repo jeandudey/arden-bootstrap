@@ -7,6 +7,7 @@ description: |
 build-depends:
   (>):
   - autoconf/autoconf-2.71.bst
+  - linux-headers/linux-headers-4.14.341.bst
   - automake/automake-1.16.3.bst
   - perl/perl-5.18.4.bst
 
