@@ -38,3 +38,4 @@ config:
   - |
     install -D bash %{install-root}%{bindir}/bash
     install bash %{install-root}%{bindir}/sh
+    ln -s usr/bin %{install-root}/bin

@@ -1,0 +1,31 @@
+build-depends:
+- autoconf/autoconf-2.69.bst
+- automake/automake-1.15.1.bst
+- bash/bash-5.2.15.bst
+- binutils/binutils-2.41-pass0.bst
+- bison/bison.bst
+- coreutils/coreutils-5.0.bst
+- diffutils/diffutils.bst
+- findutils/findutils-4.2.33.bst
+- flex/flex.bst
+- gawk/gawk.bst
+- gcc/gcc-4.7.4.bst
+- gmp/gmp.bst
+- grep/grep.bst
+- libtool/libtool-2.2.4.bst
+- live-bootstrap/source.bst
+- m4/m4.bst
+- make/make-4.2.1.bst
+- mpc/mpc.bst
+- mpfr/mpfr.bst
+- musl/musl-1.2.5.bst
+- oyacc/oyacc.bst
+- patch/patch.bst
+- perl/perl-5.8.9.bst
+- pkg-config/pkg-config-0.29.2.bst
+- sed/sed.bst
+- tar/tar.bst
+- zlib/zlib.bst
+
+variables:
+  autoreconf-1-15: AUTOMAKE=automake-1.15 ACLOCAL=aclocal-1.15 autoreconf-2.69 -fi
