@@ -11,6 +11,11 @@ variables:
   make: make -j1 -f Makefile %{make-args}
   make-install: make -j1 -f Makefile %{make-args} install DESTDIR="%{install-root}"
   make-args: PREFIX=%{prefix}
+  perl-prepare: |
+    for file in embed keywords opcode; do
+      rm -f $file.h
+      perl $file.pl
+    done
 
 config:
   build-commands:
@@ -22,7 +27,4 @@ config:
       bison -d perly.y
       mv perly.tab.c perly.c
       mv perly.tab.h perly.h
-      for file in embed keywords opcode; do
-        rm -f $file.h
-        perl $file.pl
-      done
+      %{perl-prepare}
