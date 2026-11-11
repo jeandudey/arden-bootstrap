@@ -1,0 +1,39 @@
+build-depends:
+- bash/bash.bst
+- coreutils/coreutils-5.0.bst
+- gawk/gawk.bst
+- grep/grep.bst
+- m4/m4.bst
+- make/make.bst
+- perl/perl-5.6.2.bst
+- sed/sed.bst
+- tcc/musl/toolchain.bst
+
+variables:
+  # Run before configure, in the source tree.
+  ac-prepare: ""
+  # Run before make, for a make that depends on the order of its targets.
+  ac-prebuild: |
+    make -C bin autom4te
+    make -C lib
+  ac-pkgdatadir: |
+    for file in */*/Makefile.in */Makefile.in Makefile.in; do
+      sed -i '/^pkgdatadir/s:$:-@VERSION@:' "$file"
+    done
+
+config:
+  configure-commands:
+  - |
+    %{ac-prepare}
+    %{ac-pkgdatadir}
+    ./configure --prefix=%{prefix} --program-suffix=-%{ac-version}
+  build-commands:
+  - |
+    %{ac-prebuild}
+    make MAKEINFO=true
+  install-commands:
+  - |
+    make install MAKEINFO=true DESTDIR=%{install-root}
+    for tool in autoconf autoheader autom4te autoreconf; do
+      ln -s $tool-%{ac-version} %{install-root}%{bindir}/$tool
+    done
