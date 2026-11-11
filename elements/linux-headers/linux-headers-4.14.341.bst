@@ -44,7 +44,7 @@ config:
         scripts/headers_install.sh %{inc}/$path $d/$path $(basename $h)
       done
     done
-    for i in types ioctl termios termbits ioctls sockios socket param; do
+    for i in types ioctl termios termbits ioctls sockios socket param mman; do
       cp %{inc}/asm-generic/$i.h %{inc}/asm/$i.h
     done
     sh arch/x86/entry/syscalls/syscallhdr.sh arch/x86/entry/syscalls/syscall_32.tbl \
