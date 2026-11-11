@@ -9,7 +9,7 @@ description: |
 build-depends:
 - bash/files.bst
 - bash/source.bst
-- coreutils/coreutils.bst
+- coreutils/coreutils-0.bst
 - live-bootstrap/source.bst
 - make/make.bst
 - oyacc/oyacc.bst

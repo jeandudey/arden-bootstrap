@@ -6,7 +6,7 @@ description: |
 
 build-depends:
 - bash/bash.bst
-- coreutils/coreutils.bst
+- coreutils/coreutils-0.bst
 - live-bootstrap/source.bst
 - make/make.bst
 - tcc/musl/toolchain.bst

@@ -6,7 +6,7 @@ description: |
 
 build-depends:
 - bash/bash.bst
-- coreutils/coreutils.bst
+- coreutils/coreutils-0.bst
 - make/make.bst
 - oyacc/oyacc.bst
 - tcc/musl/toolchain.bst

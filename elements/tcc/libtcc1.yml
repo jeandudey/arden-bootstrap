@@ -2,7 +2,7 @@
 
 build-depends:
 - bash/bash.bst
-- coreutils/coreutils.bst
+- coreutils/coreutils-0.bst
 - tcc/source.bst
 
 config:
