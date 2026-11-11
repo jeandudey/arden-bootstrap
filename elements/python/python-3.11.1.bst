@@ -18,6 +18,10 @@ build-depends:
   - python/python-3.8.16.bst
   - xz/xz-5.6.4.bst
 
+runtime-depends:
+- musl/musl-1.2.5.bst
+- zlib/zlib-shared.bst
+
 sources:
 - kind: tar
   url: "python:ftp/python/3.11.1/Python-3.11.1.tar.xz"
