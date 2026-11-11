@@ -4,6 +4,7 @@ build-depends:
 - bash/bash.bst
 - binutils/binutils-2.30.bst
 - coreutils/coreutils-5.0.bst
+- diffutils/diffutils.bst
 - findutils/findutils-4.2.33.bst
 - gawk/gawk.bst
 - gcc/gcc-4.0.4.bst
