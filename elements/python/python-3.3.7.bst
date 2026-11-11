@@ -11,6 +11,7 @@ build-depends:
   - autoconf/autoconf-2.71.bst
   - automake/automake-1.16.3.bst
   - libffi/libffi-3.5.2.bst
+  - openssl/openssl-3.6.0.bst
   - linux-headers/linux-headers-4.14.341.bst
   - perl/perl-5.18.4.bst
   - python/python-3.1.5.bst
