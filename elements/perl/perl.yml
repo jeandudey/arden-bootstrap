@@ -1,0 +1,28 @@
+build-depends:
+- bash/bash.bst
+- bison/bison.bst
+- coreutils/coreutils-5.0.bst
+- live-bootstrap/source.bst
+- make/make.bst
+- sed/sed.bst
+- tcc/musl/toolchain.bst
+
+variables:
+  make: make -j1 -f Makefile %{make-args}
+  make-install: make -j1 -f Makefile %{make-args} install DESTDIR="%{install-root}"
+  make-args: PREFIX=%{prefix}
+
+config:
+  build-commands:
+    (<):
+    - |
+      cp %{libdir}/live-bootstrap/%{lb-perl}/mk/main.mk Makefile
+      cp %{libdir}/live-bootstrap/%{lb-perl}/files/config.h .
+      rm -f perly.c perly.h
+      bison -d perly.y
+      mv perly.tab.c perly.c
+      mv perly.tab.h perly.h
+      for file in embed keywords opcode; do
+        rm -f $file.h
+        perl $file.pl
+      done
