@@ -14,7 +14,7 @@ build-depends:
 - m4/m4.bst
 - oyacc/oyacc.bst
 - make/make.bst
-- musl/musl-1.2.5.bst
+- musl/musl-1.2.5-pass0.bst
 - perl/perl-5.6.2.bst
 - sed/sed.bst
 - tar/tar.bst

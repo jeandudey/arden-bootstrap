@@ -25,7 +25,7 @@ build-depends:
 - tar/tar.bst
 - gcc/gcc-4.0.4-pass0.bst
 - findutils/findutils-4.2.33.bst
-- musl/musl-1.2.5.bst
+- musl/musl-1.2.5-pass0.bst
 
 sources:
 - kind: tar

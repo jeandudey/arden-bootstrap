@@ -18,7 +18,7 @@ build-depends:
 - make/make-4.2.1.bst
 - mpc/mpc.bst
 - mpfr/mpfr.bst
-- musl/musl-1.2.5.bst
+- musl/musl-1.2.5-pass0.bst
 - oyacc/oyacc.bst
 - patch/patch.bst
 - perl/perl-5.8.9.bst

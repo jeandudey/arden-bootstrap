@@ -1,19 +1,11 @@
 kind: manual
+(@): elements/gcc/tools-new.yml
 
 description: |
-  musl 1.2.5, built by the gcc 4.0.4 that is built by tcc, with the assembler
-  and the linker of binutils.  The patches live-bootstrap has for it are for
-  32 bits and not needed.
-
-build-depends:
-- bash/bash.bst
-- binutils/binutils-2.30.bst
-- coreutils/coreutils-5.0.bst
-- gcc/gcc-4.0.4-pass0.bst
-- grep/grep.bst
-- make/make.bst
-- musl/musl.bst
-- sed/sed.bst
+  musl 1.2.5 again, built by gcc 4.7.4 and binutils 2.41 with its shared library,
+  which is the dynamic linker, so that shared objects can be loaded.  The
+  startup files are where the compiler finds them, and the dynamic linker looks
+  for libraries where they are installed.
 
 sources:
 - kind: tar
@@ -23,9 +15,13 @@ sources:
 config:
   configure-commands:
   - |
-    CC=gcc ./configure --host=%{triple} --disable-shared \
-      --prefix=%{prefix} --libdir=%{libdir} --includedir=%{prefix}/include/
+    CC=gcc ./configure --host=%{triple} --prefix=%{prefix} --libdir=%{libdir} \
+      --includedir=%{prefix}/include/
   build-commands:
   - make CROSS_COMPILE=
   install-commands:
-  - make DESTDIR=%{install-root} install
+  - |
+    make DESTDIR=%{install-root} install
+    mkdir -p %{install-root}%{bindir} %{install-root}/etc
+    ln -s ../lib/libc.so %{install-root}%{bindir}/ldd
+    echo %{libdir} > %{install-root}/etc/ld-musl-%{cpu}.path
