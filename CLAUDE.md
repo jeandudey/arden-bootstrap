@@ -8,6 +8,19 @@ This uses the Apache BuildStream 2.0 build system.
 
 - `elements` The Apache BuildStream 2.0 elements.
 - `elements/stage0` Where the bootstrap starts, it uses the hex0-seed from `elements/bootstrap-seeds.bst`.
+- `elements/final` The final version of each tool, under its plain name, for projects that take
+  elements from here (junctions).
+
+## Final names
+
+Elements are named for the version they build (`gcc-15.2.0.bst`), and an older build of a tool
+keeps the plain or a suffixed name that other elements depend on (`make/make.bst` is make 3.82 built
+by tcc, `musl/musl.bst` is 1.1.24).  Those names are not the final tools.
+
+`final/<tool>.bst` is a `kind: stack` that depends only on the versioned element live-bootstrap ends
+with.  Depend on `final/gcc.bst` and not on `gcc/gcc-15.2.0.bst`.  When a tool gets a newer final
+version, change the dependency of its `final/` element and nothing else.  No element in the chain
+depends on `final/`.
 
 ## Style
 
